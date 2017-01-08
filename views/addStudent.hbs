@@ -1,0 +1,28 @@
+{{!--bs3-form--}}
+<form method="POST" role="form">
+    <legend>Add Student</legend>
+
+    <div class="form-group">
+        <label for="firstName">label</label>
+        <input type="text" name="firstName" class="form-control" id="firstName" placeholder="First Name...">
+    </div>
+
+    <div class="form-group">
+        <label for="lastName">label</label>
+        <input type="text" name="lastName" class="form-control" id="lastName" placeholder="Last Name...">
+    </div>
+
+    <div class="form-group">
+        <label for="email">label</label>
+        <input type="email" name="email" class="form-control" id="email" placeholder="Email...">
+    </div>
+
+
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+
+
+<p>You entered:</p>
+<p>{{firstName}}</p>
+<p>{{lastName}}</p>
+<p>{{email}}</p>
