@@ -13,12 +13,11 @@ var router = express.Router();
 
 /* GET home page. */
 
-function indexListener(req, res) {
-  res.render('index');
-}
 
 
-router.get('/', indexListener);
+router.get('/', function(req, res) {
+  res.render('students', {title:'Students'});
+});
 
 /* GET addStudent page. */
 router.get('/addStudent', function (req, res) {
@@ -27,7 +26,9 @@ router.get('/addStudent', function (req, res) {
   // var lastName = req.query.lastName;
   // var email = req.query.email;
 
-  res.render('addStudent', {title:'Add Student'});
+  res.render('addStudent', {
+    title: 'Add Student'
+  });
 });
 
 var students = [];
@@ -51,8 +52,10 @@ router.post('/addStudent', function (req, res) {
 });
 
 
-router.get('/students', function(req, res){
-  res.render('students', {students:students});
+router.get('/students', function (req, res) {
+  res.render('students', {
+    students: students
+  });
 })
 
 
