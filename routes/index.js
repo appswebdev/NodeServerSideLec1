@@ -12,11 +12,28 @@ var router = express.Router();
 */
 
 /* GET home page. */
-
-
-
-router.get('/', function(req, res) {
-  res.render('students', {title:'Students'});
+// 
+var pg = require('pg');
+//postgress://localhost:5432/students
+router.get('/', function (req, res) {
+  pg.connect(process.env.DATABASE_URL || 'postgres://pnntgfdiggtbbe:e70020503957d0b52dbe89dee72ec8d051bde2fd70b00ab8ff9e5be7d1b6182b@ec2-204-236-218-242.compute-1.amazonaws.com:5432/d6m7cdkhg6kihd', (err, client, done) => {
+    if (err) {
+      return res.render('error', {
+        error: err,
+        message: err.message
+      });
+    }
+    client.query("SELECT * FROM Students ORDER BY id;", (err, result) => {
+      done();
+      if (err) {
+        return res.render('error', {
+          error: err,
+          message: err.message
+        });
+      }
+      res.render('students', {students:result.rows});
+    });
+  })
 });
 
 /* GET addStudent page. */
@@ -37,6 +54,8 @@ router.post('/addStudent', function (req, res) {
   var firstName = req.body.firstName;
   var lastName = req.body.lastName;
   var email = req.body.email;
+
+
 
   students.push({
     firstName: firstName,
