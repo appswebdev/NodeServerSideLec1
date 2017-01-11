@@ -27,7 +27,7 @@ router.get('/addStudent', function (req, res) {
   // var lastName = req.query.lastName;
   // var email = req.query.email;
 
-  res.render('addStudent');
+  res.render('addStudent', {title:'Add Student'});
 });
 
 var students = [];
