@@ -16,7 +16,7 @@ var router = express.Router();
 var pg = require('pg');
 //postgress://localhost:5432/students
 router.get('/', function (req, res) {
-  query("SELECT * FROM Students ORDER BY id;", (err, result) => {
+  query("SELECT * FROM Students ORDER BY id;", [], (err, result) => {
     if (err) {
       return res.render('error', {
         error: err,
@@ -31,12 +31,12 @@ router.get('/', function (req, res) {
 });
 
 
-function query(SQL, callback) {
+function query(SQL, params, callback) {
   pg.connect(process.env.DATABASE_URL || 'postgres://pnntgfdiggtbbe:e70020503957d0b52dbe89dee72ec8d051bde2fd70b00ab8ff9e5be7d1b6182b@ec2-204-236-218-242.compute-1.amazonaws.com:5432/d6m7cdkhg6kihd', (err, client, done) => {
     if (err) {
       callback(err);
     }
-    client.query(SQL, (err, result) => {
+    client.query(SQL, params, (err, result) => {
       done();
       if (err) {
         callback(err);
@@ -64,18 +64,19 @@ router.post('/addStudent', function (req, res) {
   var lastName = req.body.lastName;
   var email = req.body.email;
 
-
-
-  students.push({
-    firstName: firstName,
-    lastName: lastName,
-    email: email
-  });
-
-  res.render('addStudent', {
-    firstName: firstName,
-    lastName: lastName,
-    email: email
+  var SQL = "INSERT INTO Students(firstName, lastName, email) VALUES($1, $2, $3)";
+  query(SQL, [firstName, lastName, email], (err, result) => {
+    if (err) {
+      return res.render('error', {
+        error: err,
+        message: err.message
+      });
+      res.render('addStudent', {
+        firstName: firstName,
+        lastName: lastName,
+        email: email
+      })
+    }
   });
 });
 
