@@ -47,7 +47,7 @@ function query(SQL, params, callback) {
   })
 }
 
-
+//error handling
 router.get('/edit/:id', function (req, res, next) {
   var id = req.params.id;
   var SQL = "SELECT * FROM Students WHERE id=$1"
@@ -56,13 +56,12 @@ router.get('/edit/:id', function (req, res, next) {
       return res.render('error', {
         error: err,
         message: err.message
-      })
+      });
     }
     res.render('edit', {
       title: "Edit Page",
       student: result.rows[0]
     });
-
   });
 });
 
@@ -104,9 +103,22 @@ router.get('/addStudent', function (req, res) {
   });
 });
 
+router.get('/delete', function (req, res, next) {
+  var id = req.query.id;
+  var SQL = 'DELETE FROM Students WHERE id = $1;'
+  query(SQL, [id], function (err, result) {
+    if (err) {
+      return next(err)
+    };
+    res.render('delete', {
+      title: "Deleted " + id
+    })
+  })
+
+})
 
 
-router.post('/addStudent', function (req, res) {
+router.post('/addStudent', function (req, res, next) {
   //in post the parameters are passed in the body
   var firstName = req.body.firstName;
   var lastName = req.body.lastName;
@@ -117,11 +129,7 @@ router.post('/addStudent', function (req, res) {
   var SQL = "INSERT INTO Students(firstName, lastName, email) VALUES($1, $2, $3)";
   query(SQL, [firstName, lastName, email], (err, result) => {
     if (err) {
-      console.log('error', err);
-      return res.render('error', {
-        error: err,
-        message: err.message
-      });
+      return next(err);
     }
     console.log('rendering addStudent')
     console.log("Result: ", result);
@@ -144,6 +152,5 @@ router.post('/addStudent', function (req, res) {
 //       title: 'Express'
 //     });
 // });
-
 
 module.exports = router;
