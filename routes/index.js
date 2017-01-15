@@ -46,6 +46,52 @@ function query(SQL, params, callback) {
     });
   })
 }
+
+
+router.get('/edit', function (req, res, next) {
+  var id = req.query.id;
+  var SQL = "SELECT * FROM Students WHERE id=$1"
+  query(SQL, [id], function (err, result) {
+    if (err) {
+      return res.render('error', {
+        error: err,
+        message: err.message
+      })
+    }
+    res.render('edit', {
+      title: "Edit Page",
+      student: result.rows[0]
+    });
+
+  });
+});
+
+router.post('/edit', function (req, res, next) {
+  var firstName = req.body.firstName;
+  var lastName = req.body.lastName;
+  var email = req.body.email;
+  var id = req.body.id;
+
+  var SQL = "UPDATE Students SET firstName = $1, lastName = $2, email = $3 WHERE id = $4;";
+  query(SQL, [firstName, lastName, email, id], function (err, result) {
+    if (err) {
+      return res.render('error', {
+        error: err
+      });
+    }
+
+    res.render('edit', {
+      title: "Details saved",
+      student: {
+        firstname: firstName,
+        lastname: lastName,
+        email: email,
+        id: id
+      }
+    })
+  })
+
+});
 /* GET addStudent page. */
 router.get('/addStudent', function (req, res) {
   //in HTTP GET the parameters are passed in the query;
