@@ -48,8 +48,8 @@ function query(SQL, params, callback) {
 }
 
 
-router.get('/edit', function (req, res, next) {
-  var id = req.query.id;
+router.get('/edit/:id', function (req, res, next) {
+  var id = req.params.id;
   var SQL = "SELECT * FROM Students WHERE id=$1"
   query(SQL, [id], function (err, result) {
     if (err) {
